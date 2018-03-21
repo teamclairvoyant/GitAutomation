@@ -84,7 +84,7 @@ if [ -d "$TARGET_DIR"/.git ]; then
 	cd "$TARGET_DIR"
 	cat "$TARGET_DIR"/.git/config | grep $REPO > /dev/null
 	if [ $? -ne 0 ]; then
-		f_write_error_log "The repo given in xml is different from the one in config"
+		f_write_error_log "The repo given in xml is different from the one in config. Try setting the url with command 'git remote ser-url origin $REPO in the $TARGET_DIR'"
 		exit 1
 	fi
         
@@ -118,7 +118,10 @@ done < $input_file
 
 cd "$TARGET_DIR"
 
-git add --all
+while read f;
+do
+	git add "$TARGET_DIR"/$f
+done < $input_file
 
 echo -n "Please enter your commit message:"
 read commit
