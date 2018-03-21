@@ -13,7 +13,7 @@ Usage of Script must be done according to below points:
    
 6) After authentication , all the variables are assigned getting the values from xml file
 7) Then it is checked if the url set under config is the same as the one passed in XML file( only SSH url , not https ).
-8) Then existence of the branh specified in xml_file is checked. If yes, it is checked out.
+8) Then existence of the branch specified in xml_file is checked. If yes, it is checked out.
 9) Then all the entries in input_file.txt are copied to the Target dir with the same directory structure as the source.
 10) All the files are added , commited( user is prompted for commit message )
 11) All the changes are pushed to the repository.
