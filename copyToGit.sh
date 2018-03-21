@@ -1,9 +1,9 @@
 #!/bin/bash
 
-
+CURR_DIR=`pwd`
 SCRIPT_NAME=$(basename $0)
-LOG_FILE="./paypal.${SCRIPT_NAME}.$(date '+%Y%m%d%H%M%S').log"
-ERROR_LOG_FILE="./paypal.${SCRIPT_NAME}.$(date '+%Y%m%d%H%M%S').error"
+LOG_FILE="$CURR_DIR"/paypal.${SCRIPT_NAME}.$(date '+%Y%m%d%H%M%S').log
+ERROR_LOG_FILE="$CURR_DIR"/paypal.${SCRIPT_NAME}.$(date '+%Y%m%d%H%M%S').error
 
 find ./ -name "*.error" -exec rm -rf {} \;
 find ./ -name "*.log" -exec rm -rf {} \;
@@ -11,14 +11,16 @@ find ./ -name "*.log" -exec rm -rf {} \;
 f_write_log()
 {
   local to_be_logged="$(date '+%Y%m%d %H:%M:%S') | $1"
-  echo -e "${to_be_logged}" | tee -a ${LOG_FILE}
+  echo -e "${to_be_logged}"
+  echo -e "${to_be_logged}" >> ${LOG_FILE}
 }
 
 f_write_error_log()
 {
   #write error logs into a separate file.
   local to_be_logged="$(date '+%Y%m%d %H:%M:%S') | $1"
-  echo -e "${to_be_logged}" | tee -a ${ERROR_LOG_FILE}
+  echo -e "${to_be_logged}"
+  echo -e "${to_be_logged}" >> ${ERROR_LOG_FILE}
 }
 
 if [ $# -gt 2 -o $# -lt 2 ]; then
@@ -54,7 +56,6 @@ else
 fi
 
 
-CURR_DIR=`pwd`
 BRANCH=`awk '/<name>BRANCH/{getline;print $3}' FS="[<>]" $xml_file`
 echo "$BRANCH"
 REPO=`awk '/<name>REPO/{getline;print $3}' FS="[<>]" $xml_file`
@@ -107,11 +108,15 @@ fi
 
 while read d;
 do
-
-        dir_name=`echo ${d%/*}`
-	echo "$dir_name"
-	[ ! -d "$TARGET_DIR"/"$dir_name" ] && mkdir -p "$TARGET_DIR"/"$dir_name"
-        /bin/cp -r "$HOME_DIR"/$d "$TARGET_DIR"/$d
+	if [ `echo $d | grep "/"` ];then
+	     	
+        	dir_name=`echo ${d%/*}`
+		#echo "$dir_name"
+		[ ! -d "$TARGET_DIR"/"$dir_name" ] && mkdir -p "$TARGET_DIR"/"$dir_name"
+        	/bin/cp -r "$HOME_DIR"/$d "$TARGET_DIR"/$d
+	else
+		/bin/cp -r "$HOME_DIR"/$d "$TARGET_DIR"/$d
+	fi
 
 done < $input_file 
 
